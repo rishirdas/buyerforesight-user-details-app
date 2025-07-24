@@ -1,0 +1,74 @@
+<div class="p-4">
+    <h2 class="text-2xl font-bold mb-4">User List</h2>
+
+    <div class="mb-4 flex justify-start">
+        <input type="text" placeholder="Search by name or email..."
+            class="px-4 py-2 border border-gray-300 rounded-md w-full sm:w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            [(ngModel)]="searchTerm" />
+    </div>
+
+    <table class="min-w-full bg-white border rounded-lg shadow text-sm">
+        <thead class="bg-gray-100 text-left">
+            <tr>
+                <!-- Name Column -->
+                <th class="p-3 cursor-pointer" (click)="sortBy('name')">
+                    <span class="flex items-center gap-1">
+                        Name
+                        <i *ngIf="sortColumn === 'name'" class="fa-solid" [ngClass]="{
+                 'fa-sort-up': sortDirection === 'asc',
+                 'fa-sort-down': sortDirection === 'desc'
+               }"></i>
+                    </span>
+                </th>
+
+                <!-- Email Column -->
+                <th class="p-3 cursor-pointer" (click)="sortBy('email')">
+                    <span class="flex items-center gap-1">
+                        Email
+                        <i *ngIf="sortColumn === 'email'" class="fa-solid" [ngClass]="{
+                 'fa-sort-up': sortDirection === 'asc',
+                 'fa-sort-down': sortDirection === 'desc'
+               }"></i>
+                    </span>
+                </th>
+
+                <th class="p-3">Phone</th>
+                <th class="p-3">Website</th>
+            </tr>
+        </thead>
+
+        <tbody *ngIf="!isLoading; else loadingTemplate">
+            <tr *ngFor="let user of paginatedUsers()" class="hover:bg-gray-50 border-b">
+                <td class="p-3 text-blue-600 underline cursor-pointer" (click)="goToUser(user.id)">
+                    {{ user.name }}
+                </td>
+                <td class="p-3">{{ user.email }}</td>
+                <td class="p-3">{{ user.phone }}</td>
+                <td class="p-3">{{ user.website }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ng-template #loadingTemplate>
+        <div class="flex justify-center items-center p-6">
+            <i class="fa-solid fa-spinner fa-spin text-xl text-gray-600"></i>
+            <span class="ml-2 text-gray-600">Loading users...</span>
+        </div>
+    </ng-template>
+
+    <div class="mt-4 flex justify-between items-center text-sm" *ngIf="getFilteredUsers().length > pageSize">
+        <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+            [disabled]="currentPage === 1" (click)="previousPage()">
+            Previous
+        </button>
+
+        <span class="text-gray-600">
+            Page {{ currentPage }} of {{ totalPages }}
+        </span>
+
+        <button class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+            [disabled]="currentPage === totalPages" (click)="nextPage()">
+            Next
+        </button>
+    </div>
+</div>
